@@ -1,0 +1,9 @@
+6/9/2011
+
+The trunk for this project is just the standard WRF v3.3, as distributed by i
+NCAR.  Bug fixes reported at http://www.mmm.ucar.edu/wrf/users/wrfv3.3/known-prob-3.3.html through 5/27/2011 have been applied to this version.
+
+The working branch will be merged into the wrf33 trunk when it is complete
+and working correctly.
+
+JLW
