@@ -1,9 +1,53 @@
 6/9/2011
 
-The trunk for this project is just the standard WRF v3.3, as distributed by i
+The trunk for this project is just the standard WRF v3.3, as distributed by 
 NCAR.  Bug fixes reported at http://www.mmm.ucar.edu/wrf/users/wrfv3.3/known-prob-3.3.html through 5/27/2011 have been applied to this version.
 
 The working branch will be merged into the wrf33 trunk when it is complete
 and working correctly.
 
 JLW
+
+6/14/2011
+
+Modified the build scripts to add options and checks to build with ParFlow while
+still allowing the WRF to build standalone.  This allows building WRF with or 
+without PF.
+
+JLW
+
+
+
+TO INSTALL PF.WRF
+1.  Build ParFlow without CLM (best to use r 551 or later, but I wouldn't use 
+    any version earlier than r 491) without CLM.  Be sure to set an
+    environmental variable PARFLOW_DIR to the directory containing your ParFlow 
+    install. WRF cannot be compiled with ParFlow with CLM installed, but after 
+    WRF is built any configuration of ParFlow will work.
+
+2.  If you built ParFlow with Silo and/or Hypre, SILO_DIR and/or HYPRE_DIR
+    environmental variables will need to be set before you run compile.
+
+3.  Building PF.WRF is mostly the same procedure as building standalone WRF.
+    To activate the ParFlow to WRF coupling at compile time, do one or both
+    of a) and b) below:
+   a) Set an environmental variable WRF_PFWRF to 1
+      export WRF_PFWRF=1
+       or
+      setenv WRF_PFWRF 1
+      Then build WRF according to the instructions in the WRF manual.
+   b) Add 'pfwrf' as an argument to the configure and compile script executions.
+       ./configure pfwrf
+       ./compile pfwrf
+
+    Setting the environmental variable as in a) causes the configure and compile
+    scripts to automatically build with ParFlow, so the pfwrf argument is not 
+    necessary for configure, and any acceptable argument (listed when you run 
+    ./compile with no arguments) works for the compile script.
+
+    Building WRF with the 'pfwrf' argument in the compile script as in b) 
+    automatically compiles em_real.  If you wish to compile a different option
+    from the Makefile, use the environmental variable as in a).
+
+    Doing both a and b won't hurt anything.  It will build em_real with ParFlow.
+

@@ -47,6 +47,8 @@ CONTAINS
     USE module_force_scm
     USE module_convtrans_prep
     USE module_big_step_utilities_em, ONLY : phy_prep
+    USE module_parflow
+
 use module_scalar_tables
 #ifdef DM_PARALLEL
     USE module_dm, ONLY : local_communicator, mytask, ntasks, ntasks_x, ntasks_y, local_communicator_periodic, wrf_dm_maxval
@@ -138,6 +140,9 @@ use module_scalar_tables
 #if ( WRF_DFI_RADAR == 1 )
     INTEGER  do_capsupress   ! =1 do CAP supress, other = don't
 #endif
+
+  !parflow
+  INTEGER dummy     !PF needs a dummy var for init call
 
   CALL get_ijk_from_subgrid (  grid ,                   &
                             sids, side, sjds, sjde, skds, skde,    &
@@ -357,6 +362,14 @@ BENCH_END(rad_driver_tim)
 
 !********* Surface driver
 ! surface
+ ! initialize parflow, if installed and active
+      IF ( config_flags%parflow ) THEN
+         IF ( ( grid%itimestep .EQ. 1 ) .OR. ( config_flags%restart ) ) THEN 
+            CALL parflow_init( ims, ime, jms, jme, grid%num_soil_layers, &
+     &           grid%PF_FLUX, grid%PF_PRESSURE, grid%PF_POROSITY, grid%PF_SATURATION, &
+     &           config_flags%parflowinput) 
+         ENDIF
+      ENDIF
 
 BENCH_START(surf_driver_tim)
 
@@ -526,6 +539,7 @@ BENCH_START(surf_driver_tim)
      &        ,QSG=grid%qsg,QVG=grid%qvg,QCG=grid%qcg,SOILT1=grid%soilt1,TSNAV=grid%tsnav & ! ruc lsm
      &        ,SMFR3D=grid%smfr3d,KEEPFR3DFLAG=grid%keepfr3dflag,DEW=grid%dew             & ! ruc lsm
      &        ,POTEVP=grid%POTEVP, SNOPCX=grid%SNOPCX, SOILTB=grid%SOILTB                 & ! ruc lsm
+     &        ,grid=grid, config_flags=config_flags                                      & ! Added for parflow
      &        ,ISURBAN=isurban, MMINLU=TRIM(mminlu)                       &
      &        ,SNOTIME = grid%SNOTIME                                     &
      &        ,RDLAI2D=config_flags%rdlai2d                               &
@@ -533,6 +547,7 @@ BENCH_START(surf_driver_tim)
      &        ,NOAHRES=grid%noahres                                       &
 !mynn mp@
      &         ,ch=grid%ch,tsq=grid%tsq,qsq=grid%qsq,cov=grid%cov &
+     
      &                                                              )
 BENCH_END(surf_driver_tim)
 

@@ -657,6 +657,17 @@ state  integer  IFNDSOILW        -      misc        1         -     i         "F
 state    real   SSTSK            ij     misc        1         -     rhd=(interp_mask_water_field:lu_index,iswater)   "SSTSK"              "SKIN SEA SURFACE TEMPERATURE" "K"
 state    real   DTW              ij     misc        1         -     r   "DTW"              "WARM LAYER TEMP DIFF" "C"
 
+# PARFLOW VARIABLES parflow
+#
+
+state    real   PF_FLUX	               ilj     -          1         Z     rh    "PF_FLUX"                "Parflow Flux"               "m d-1"
+state    real   PF_POROSITY	       ilj     -          1         Z     rh    "PF_POROSITY"            "Parflow Porosity"           "-"
+state    real   PF_PRESSURE            ilj     -          1         Z     rh    "PF_PRESSURE"            "Parflow Pressure"           "m"
+state    real   PF_SATURATION          ilj     -          1         Z     rh    "PF_SATURATION"          "Parflow Saturation"         "-"
+state    real   PF_PCPDRP_ACCUMULATOR  ilj     -          1         Z     rh    "PF_PCPDRP_ACCUMULATOR"    "Parflow precip accumulator"   "m"
+state    real   PF_EDIR_ACCUMULATOR    ilj     -          1         Z     rh    "PF_EDIR_ACCUMULATOR"    "Parflow edir accumulator"   "m"
+state    real   PF_ET_ACCUMULATOR      ilj     -          1         Z     rh    "PF_ET_ACCUMULATOR"      "Parflow et accumulator"     "m"
+
 # DFI variables
 state   real   hcoeff         {ndfi} misc        1         -     -    "HCOEFF"               "initialization weights"
 state   real   hcoeff_tot       -    misc        1         -     -    "HCOEFF_TOT"               "initialization weights"
@@ -1579,6 +1590,16 @@ rconfig   integer prec_acc_opt            derived               1              0
 rconfig   integer bucketr_opt             derived               1              0       -     "bucketr_opt"  "option to output water accum based on bucket_mm"          ""
 
 rconfig   integer grav_settling           namelist,physics      max_domains  0         h    "grav_settling"     "activate gravitationalsettling of fog  0=no, 1=yes"
+
+rconfig   logical parflow             	  namelist,physics      1              .false.           -    "parflow"           "switch to use parflow"   ""
+rconfig   character parflowinput          namelist,physics	1              "wrf_parflow"     -    "parflowinput"      "parflow input file"      ""
+rconfig	  real    pfdzs1                  namelist,physics	1		0.1	-	"pfdzs1" "first soil depth entry" "m"	 
+rconfig	  real    pfdzs2                  namelist,physics	1		0.3	-	"pfdzs2" "second soil depth entry" "m"	 
+rconfig	  real    pfdzs3                  namelist,physics	1		0.6	-	"pfdzs3" "third soil depth entry" "m"	 
+rconfig	  real    pfdzs4                  namelist,physics	1		1.0	-	"pfdzs4" "fourth soil depth entry" "m"	 
+rconfig   integer parflow_subcycle        namelist,physics      1              1        -       "parflow_subcycle" "Number of timesteps to subcycle parflow"   ""
+#rconfig   logical parflow_test_balance 	  namelist,physics      1              .false.  -       "parflow_test_balance" "switch to use run parflow water balance test case"   ""
+#rconfig	  real    parflow_test_balance_moist_tend  namelist,physics	1	1.0	-	"parflow_test_balance_moist_tend" "value used to force moisture tendency for water balance test" ""	 
 
 #FDDA namelist parameters
 rconfig   real    FGDT                    namelist,fdda         max_domains    0       h        "FGDT"          ""      ""

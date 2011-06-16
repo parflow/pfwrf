@@ -68,7 +68,8 @@ CONTAINS
                        RDLAI2D,USEMONALB,                               &
                        SNOTIME1,                                        &
                        RIBB,                                            &
-                       SMCWLT,SMCDRY,SMCREF,SMCMAX,NROOT)                    !P
+                       SMCWLT,SMCDRY,SMCREF,SMCMAX,NROOT,               &    !P
+                       PCPDRP, parflow_flag)                                 !parflow
 ! ----------------------------------------------------------------------
 ! SUBROUTINE SFLX - UNIFIED NOAHLSM VERSION 1.0 JULY 2007
 ! ----------------------------------------------------------------------
@@ -321,6 +322,10 @@ CONTAINS
       REAL :: ALBEDOMIN, ALBEDOMAX
       REAL :: EMISSMIN,  EMISSMAX
       REAL :: Z0MIN,     Z0MAX
+      
+      !needed by parflow
+      LOGICAL,INTENT(IN) :: parflow_flag 
+      REAL,INTENT(OUT)   :: PCPDRP
 
 ! ----------------------------------------------------------------------
 ! DECLARATIONS - PARAMETERS
@@ -785,7 +790,8 @@ CONTAINS
                             DKSAT,DWSAT,TBOT,ZBOT,RUNOFF1,RUNOFF2,       &
                             RUNOFF3,EDIR,EC,ET,ETT,NROOT,ICE,RTDIS,      &
                             QUARTZ,FXEXP,CSOIL,                          &
-                            BETA,DRIP,DEW,FLX1,FLX3,VEGTYP,ISURBAN)
+                            BETA,DRIP,DEW,FLX1,FLX3,VEGTYP,ISURBAN,      &
+                            PCPDRP, parflow_flag )
             ETA_KINEMATIC = ETA
          ELSE
             CALL SNOPAC (ETP,ETA,PRCP,PRCPF,SNOWNG,SMC,SMCMAX,SMCWLT,    &
@@ -800,7 +806,7 @@ CONTAINS
                          BETA,DRIP,DEW,FLX1,FLX2,FLX3,ESNOW,ETNS,EMISSI, &
                          RIBB,SOLDN,                                     &
                          ISURBAN,                                        &
-                         VEGTYP)
+                         VEGTYP, PCPDRP, parflow_flag)
             ETA_KINEMATIC =  ESNOW + ETNS
          END IF
 
@@ -1965,7 +1971,8 @@ CONTAINS
                          DKSAT,DWSAT,TBOT,ZBOT,RUNOFF1,RUNOFF2,         &
                          RUNOFF3,EDIR,EC,ET,ETT,NROOT,ICE,RTDIS,        &
                          QUARTZ,FXEXP,CSOIL,                            &
-                         BETA,DRIP,DEW,FLX1,FLX3,VEGTYP,ISURBAN)
+                         BETA,DRIP,DEW,FLX1,FLX3,VEGTYP,ISURBAN,        &
+                         PCPDRP, parflow_flag)
 
 ! ----------------------------------------------------------------------
 ! SUBROUTINE NOPAC
@@ -1994,6 +2001,10 @@ CONTAINS
       REAL, DIMENSION(1:NSOIL) :: ET1
       REAL                 :: EC1,EDIR1,ETT1,DF1,ETA1,ETP1,PRCP1,YY,    &
                               YYNUM,ZZ1
+! parflow needed PCPDRP
+      REAL, INTENT(OUT)    :: PCPDRP
+
+      LOGICAL parflow_flag
 
 ! ----------------------------------------------------------------------
 ! EXECUTABLE CODE BEGINS HERE:
@@ -2029,7 +2040,7 @@ CONTAINS
                       SHDFAC,CMCMAX,                                    &
                       RUNOFF1,RUNOFF2,RUNOFF3,                          &
                       EDIR1,EC1,ET1,                                    &
-                      DRIP)
+                      DRIP, PCPDRP, parflow_flag)
 
 ! ----------------------------------------------------------------------
 ! CONVERT MODELED EVAPOTRANSPIRATION FROM  M S-1  TO  KG M-2 S-1.
@@ -2055,7 +2066,7 @@ CONTAINS
                       SHDFAC,CMCMAX,                                    &
                       RUNOFF1,RUNOFF2,RUNOFF3,                          &
                       EDIR1,EC1,ET1,                                    &
-                      DRIP)
+                      DRIP, PCPDRP, parflow_flag)
 
 ! ----------------------------------------------------------------------
 ! CONVERT MODELED EVAPOTRANSPIRATION FROM 'M S-1' TO 'KG M-2 S-1'.
@@ -2583,7 +2594,7 @@ CONTAINS
      &                   SHDFAC,CMCMAX,                                 &
      &                   RUNOFF1,RUNOFF2,RUNOFF3,                       &
      &                   EDIR,EC,ET,                                    &
-     &                   DRIP)
+     &                   DRIP, PCPDRP, parflow_flag)
 
 ! ----------------------------------------------------------------------
 ! SUBROUTINE SMFLX
@@ -2603,13 +2614,15 @@ CONTAINS
                                KDT, PRCP1, SHDFAC, SLOPE, SMCMAX, SMCWLT
       REAL, INTENT(OUT)                      :: DRIP, RUNOFF1, RUNOFF2, RUNOFF3
       REAL, INTENT(INOUT)   :: CMC
+      LOGICAL, INTENT(IN)   :: parflow_flag
       REAL, DIMENSION(1:NSOIL), INTENT(IN)   :: ET,ZSOIL
       REAL, DIMENSION(1:NSOIL), INTENT(INOUT):: SMC, SH2O
       REAL, DIMENSION(1:NSOIL)             :: AI, BI, CI, STCF,RHSTS, RHSTT, &
                                               SICE, SH2OA, SH2OFG
-      REAL                  :: DUMMY, EXCESS,FRZFACT,PCPDRP,RHSCT,TRHSCT
+      REAL                  :: DUMMY, EXCESS,FRZFACT,RHSCT,TRHSCT
       REAL :: FAC2
       REAL :: FLIMIT
+      REAL, INTENT(OUT)     :: PCPDRP
 
 ! ----------------------------------------------------------------------
 ! EXECUTABLE CODE BEGINS HERE.
@@ -2677,7 +2690,8 @@ CONTAINS
 ! INC&UDED IN SSTEP SUBR.  FROZEN GROUND CORRECTION FACTOR, FRZFACT
 ! ADDED.  ALL WATER BALANCE CALCULATIONS USING UNFROZEN WATER
 ! ----------------------------------------------------------------------
-      IF ( ( (PCPDRP * DT) > (0.0001*1000.0* (- ZSOIL (1))* SMCMAX) )   &
+      IF (.NOT. parflow_flag ) THEN !Use NAOH to calculate SMC
+	IF ( ( (PCPDRP * DT) > (0.0001*1000.0* (- ZSOIL (1))* SMCMAX) )   &
            .OR. (FAC2 > FLIMIT) ) THEN
          CALL SRT (RHSTT,EDIR,ET,SH2O,SH2O,NSOIL,PCPDRP,ZSOIL,          &
                     DWSAT,DKSAT,SMCMAX,BEXP,RUNOFF1,                    &
@@ -2693,7 +2707,7 @@ CONTAINS
          CALL SSTEP (SH2O,SH2O,CMC,RHSTT,RHSCT,DT,NSOIL,SMCMAX,         &
                         CMCMAX,RUNOFF3,ZSOIL,SMC,SICE,AI,BI,CI)
 
-      ELSE
+        ELSE
          CALL SRT (RHSTT,EDIR,ET,SH2O,SH2O,NSOIL,PCPDRP,ZSOIL,          &
                     DWSAT,DKSAT,SMCMAX,BEXP,RUNOFF1,                    &
                       RUNOFF2,DT,SMCWLT,SLOPE,KDT,FRZFACT,SICE,AI,BI,CI)
@@ -2701,7 +2715,8 @@ CONTAINS
                         CMCMAX,RUNOFF3,ZSOIL,SMC,SICE,AI,BI,CI)
 !      RUNOF = RUNOFF
 
-      END IF
+        END IF
+      ENDIF
 
 ! ----------------------------------------------------------------------
   END SUBROUTINE SMFLX
@@ -2848,8 +2863,7 @@ CONTAINS
                           BETA,DRIP,DEW,FLX1,FLX2,FLX3,ESNOW,ETNS,EMISSI,&
                           RIBB,SOLDN,                                   &
                           ISURBAN,                                      &
-
-                          VEGTYP)
+                          VEGTYP, PCPDRP, parflow_flag)
 
 ! ----------------------------------------------------------------------
 ! SUBROUTINE SNOPAC
@@ -2879,6 +2893,9 @@ CONTAINS
       REAL, INTENT(OUT)     :: DEW,DRIP,EC,EDIR, ETNS, ESNOW,ETT,       &
                                FLX1,FLX3, RUNOFF1,RUNOFF2,RUNOFF3,      &
                                SSOIL,SNOMLT
+      LOGICAL, INTENT(IN) :: parflow_flag
+      ! parflow needed PCPDRP
+      REAL, INTENT(OUT)                       :: PCPDRP
       REAL, DIMENSION(1:NSOIL),INTENT(IN)     :: RTDIS,ZSOIL
       REAL, DIMENSION(1:NSOIL),INTENT(OUT)    :: ET
       REAL, DIMENSION(1:NSOIL), INTENT(INOUT) :: SMC,SH2O,STC
@@ -3165,7 +3182,7 @@ CONTAINS
                       SHDFAC,CMCMAX,                                    &
                       RUNOFF1,RUNOFF2,RUNOFF3,                          &
                       EDIR1,EC1,ET1,                                    &
-                      DRIP)
+                      DRIP, PCPDRP, parflow_flag)
 ! ----------------------------------------------------------------------
 ! BEFORE CALL SHFLX IN THIS SNOWPACK CASE, SET ZZ1 AND YY ARGUMENTS TO
 ! SPECIAL VALUES THAT ENSURE THAT GROUND HEAT FLUX CALCULATED IN SHFLX
