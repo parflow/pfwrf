@@ -20,34 +20,19 @@ JLW
 
 TO INSTALL PF.WRF
 1.  Build ParFlow without CLM (best to use r 551 or later, but I wouldn't use 
-    any version earlier than r 491) without CLM.  Be sure to set an
-    environmental variable PARFLOW_DIR to the directory containing your ParFlow 
-    install. WRF cannot be compiled with ParFlow with CLM installed, but after 
-    WRF is built any configuration of ParFlow will work.
+    any version earlier than r 491).  Be sure to set an environmental variable 
+    PARFLOW_DIR to the directory containing your ParFlow install. WRF cannot 
+    be compiled with ParFlow with CLM installed, but after WRF is built any 
+    configuration of ParFlow will work.
 
 2.  If you built ParFlow with Silo and/or Hypre, SILO_DIR and/or HYPRE_DIR
     environmental variables will need to be set before you run compile.
 
-3.  Building PF.WRF is mostly the same procedure as building standalone WRF.
-    To activate the ParFlow to WRF coupling at compile time, do one or both
-    of a) and b) below:
-   a) Set an environmental variable WRF_PFWRF to 1
-      export WRF_PFWRF=1
-       or
-      setenv WRF_PFWRF 1
-      Then build WRF according to the instructions in the WRF manual.
-   b) Add 'pfwrf' as an argument to the configure and compile script executions.
-       ./configure pfwrf
-       ./compile pfwrf
+3.  Build PF.WRF following the same procedure as for standalone WRF, but add
+    "pfwrf" as an argument when you execute the configure script:
+          ./configure pfwrf
+          ./compile em_real [or wrf]
 
-    Setting the environmental variable as in a) causes the configure and compile
-    scripts to automatically build with ParFlow, so the pfwrf argument is not 
-    necessary for configure, and any acceptable argument (listed when you run 
-    ./compile with no arguments) works for the compile script.
-
-    Building WRF with the 'pfwrf' argument in the compile script as in b) 
-    automatically compiles em_real.  If you wish to compile a different option
-    from the Makefile, use the environmental variable as in a).
-
-    Doing both a and b won't hurt anything.  It will build em_real with ParFlow.
+    Alternately, you can set the WRF_PFWRF environmental variable to 1 and
+    execute the configure and compile scripts as usual.
 

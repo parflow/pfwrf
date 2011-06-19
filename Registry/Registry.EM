@@ -1598,8 +1598,8 @@ rconfig	  real    pfdzs2                  namelist,physics	1		0.3	-	"pfdzs2" "se
 rconfig	  real    pfdzs3                  namelist,physics	1		0.6	-	"pfdzs3" "third soil depth entry" "m"	 
 rconfig	  real    pfdzs4                  namelist,physics	1		1.0	-	"pfdzs4" "fourth soil depth entry" "m"	 
 rconfig   integer parflow_subcycle        namelist,physics      1              1        -       "parflow_subcycle" "Number of timesteps to subcycle parflow"   ""
-#rconfig   logical parflow_test_balance 	  namelist,physics      1              .false.  -       "parflow_test_balance" "switch to use run parflow water balance test case"   ""
-#rconfig	  real    parflow_test_balance_moist_tend  namelist,physics	1	1.0	-	"parflow_test_balance_moist_tend" "value used to force moisture tendency for water balance test" ""	 
+rconfig   logical parflow_test_balance 	  namelist,physics      1              .false.  -       "parflow_test_balance" "switch to use run parflow water balance test case"   ""
+rconfig	  real    parflow_test_balance_moist_tend  namelist,physics	1	1.0	-	"parflow_test_balance_moist_tend" "value used to force moisture tendency for water balance test" ""	 
 
 #FDDA namelist parameters
 rconfig   real    FGDT                    namelist,fdda         max_domains    0       h        "FGDT"          ""      ""

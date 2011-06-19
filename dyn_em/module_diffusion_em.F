@@ -3757,6 +3757,39 @@ SUBROUTINE vertical_diffusion_2   ( ru_tendf, rv_tendf, rw_tendf, rt_tendf,   &
      ENDDO moist_loop
 
    ENDIF
+   
+   
+!*****************************************
+!*****************************************
+!
+! Jeff's test case mods.
+!
+! Use input flag parflow_test_balance set to true to run with this test.
+!
+! @SGS 6-8-09
+! @RMM 6-4-09
+   IF ( config_flags%parflow_test_balance ) THEN
+      IF (n_moist .ge. PARAM_FIRST_SCALAR) THEN
+
+         DO im = PARAM_FIRST_SCALAR, n_moist
+
+            IF ( im == P_QV ) THEN
+
+               DO k = 8, 17
+                  DO j = 7,9
+                     DO i = 7,9
+                        moist_tendf(i,k,j,im)=moist_tendf(i,k,j,im) + config_flags%parflow_test_balance_moist_tend
+                     ENDDO
+                  ENDDO
+               ENDDO
+            ENDIF
+            
+         ENDDO
+         
+      ENDIF
+   ENDIF
+!*****************************************
+!*****************************************   
 
    IF (n_chem .ge. PARAM_FIRST_SCALAR) THEN 
 

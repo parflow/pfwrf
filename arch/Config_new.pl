@@ -596,11 +596,14 @@ while ( <ARCH_PREAMBLE> )
          }
        $pf_string = "LIB_LOCAL           = $pf_parflow $pf_hyp $pf_silo" ;
        $pf_message = "#### This line added to connect to ParFlow ####" ;
+       $pf_core = "-DWRF_PFWRF=1" ;
        $_ =~ s:PFWRFMSG:$pf_message:g ;
        $_ =~ s:PFWRFLIBS:$pf_string:g ;
+       $_ =~ s:PFWRFCORE:$pf_core:g ;
       } else {
        $_ =~ s:PFWRFMSG::g ;
        $_ =~ s:PFWRFLIBS::g ;
+       $_ =~ s:PFWRFCORE::g ;
       }
 
   @preamble = ( @preamble, $_ ) ;
