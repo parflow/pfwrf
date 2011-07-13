@@ -1,29 +1,8 @@
-6/9/2011
-
-The trunk for this project is just the standard WRF v3.3, as distributed by 
-NCAR.  Bug fixes reported at http://www.mmm.ucar.edu/wrf/users/wrfv3.3/known-prob-3.3.html through 5/27/2011 have been applied to this version.
-
-The working branch will be merged into the wrf33 trunk when it is complete
-and working correctly.
-
-JLW
-
-6/14/2011
-
-Modified the build scripts to add options and checks to build with ParFlow while
-still allowing the WRF to build standalone.  This allows building WRF with or 
-without PF.
-
-JLW
-
-
-
 TO INSTALL PF.WRF
 1.  Build ParFlow without CLM (best to use r 551 or later, but I wouldn't use 
     any version earlier than r 491).  Be sure to set an environmental variable 
     PARFLOW_DIR to the directory containing your ParFlow install. WRF cannot 
-    be compiled with ParFlow with CLM installed, but after WRF is built any 
-    configuration of ParFlow will work.
+    be compiled with ParFlow with CLM installed.
 
 2.  If you built ParFlow with Silo and/or Hypre, SILO_DIR and/or HYPRE_DIR
     environmental variables will need to be set before you run compile.
@@ -33,6 +12,4 @@ TO INSTALL PF.WRF
           ./configure pfwrf
           ./compile em_real [or wrf]
 
-    Alternately, you can set the WRF_PFWRF environmental variable to 1 and
-    execute the configure and compile scripts as usual.
 

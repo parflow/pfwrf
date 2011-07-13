@@ -778,11 +778,13 @@ CONTAINS
 
           DO 70 NS=1,NSOIL
       !Plug in parflow soil moistures
+#if (WRF_PFWRF==1)
             IF ( config_flags%parflow ) THEN
                SMOIS(I,NS,J) = grid%PF_SATURATION(I,NS,J)*grid%PF_POROSITY(I,NS,J)
                SH2O(I,NS,J) = SMOIS(I,NS,J)
                if(SH2O(I,NS,J)<=0.) SH2O(I,NS,J) = 0.01
             ENDIF
+#endif
             
             SMC(NS)=SMOIS(I,NS,J)
             STC(NS)=TSLB(I,NS,J)                                          !STEMP
@@ -951,6 +953,7 @@ CONTAINS
 
           DO 80 NS=1,NSOIL
           ! Code for parflow coupling
+#if (WRF_PFWRF==1)
              if ( config_flags%parflow ) then         
                 if ( NS .EQ. 1 ) then
                    ! The old non subcycling eqn. for reference
@@ -1021,6 +1024,7 @@ CONTAINS
                    ENDIF
                 endif
              endif
+#endif
              
            SMOIS(I,NS,J)=SMC(NS)
            TSLB(I,NS,J)=STC(NS)                                        !  STEMP

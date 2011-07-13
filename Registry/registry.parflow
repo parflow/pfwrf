@@ -1,0 +1,11 @@
+# PARFLOW VARIABLES parflow
+#
+
+state    real   PF_FLUX	               ilj     -          1         Z     rh    "PF_FLUX"                "Parflow Flux"               "m d-1"
+state    real   PF_POROSITY	       ilj     -          1         Z     rh    "PF_POROSITY"            "Parflow Porosity"           "-"
+state    real   PF_PRESSURE            ilj     -          1         Z     rh    "PF_PRESSURE"            "Parflow Pressure"           "m"
+state    real   PF_SATURATION          ilj     -          1         Z     rh    "PF_SATURATION"          "Parflow Saturation"         "-"
+state    real   PF_PCPDRP_ACCUMULATOR  ilj     -          1         Z     -    "PF_PCPDRP_ACCUMULATOR"    "Parflow precip accumulator"   "m"
+state    real   PF_EDIR_ACCUMULATOR    ilj     -          1         Z     -    "PF_EDIR_ACCUMULATOR"    "Parflow edir accumulator"   "m"
+state    real   PF_ET_ACCUMULATOR      ilj     -          1         Z     -    "PF_ET_ACCUMULATOR"      "Parflow et accumulator"     "m"
+

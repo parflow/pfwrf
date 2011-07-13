@@ -1628,10 +1628,14 @@ CONTAINS
               IF ( (grid%parflow_subcycle .EQ. 1) .OR.                                                &
                    (MOD(grid%itimestep,grid%parflow_subcycle) .EQ. 1) ) THEN
                  WRITE(*,*) 'running  parflow_advance t = ' , curr_secs, ' seconds ' , grid%itimestep
+#if (WRF_PFWRF==1)
                  CALL parflow_run( DTBL*grid%parflow_subcycle,  &
                       curr_secs, ims,ime,jms,jme,i_start(1),i_end(1),          &
                       j_start(1),j_end(1), num_soil_layers,                    &
                       grid%PF_FLUX, grid%PF_PRESSURE, grid%PF_POROSITY, grid%PF_SATURATION) 
+#else
+                 call wrf_error_fatal ( 'WRF is not compiled to run with ParFlow.' )
+#endif
               ENDIF
            ENDIF
 
