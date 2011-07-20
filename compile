@@ -93,7 +93,8 @@ if ( $?WRF_PFWRF ) then
         echo "libparflow.a does not exist in PARFLOW_DIR/lib"
         set killme=1
       endif
-      if ( -f $PARFLOW_DIR/lib/libclm.a ) then
+      set chk_clm=`grep 'PARFLOW_HAVE_CLM       = yes' $PARFLOW_DIR/config/Makefile.config`
+      if ( "$chk_clm" != "" ) then
 	echo "ParFlow is built with CLM."
 	echo "PF.WRF can only compile when ParFlow is built without CLM."
 	set killme=1

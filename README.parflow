@@ -12,4 +12,8 @@ TO INSTALL PF.WRF
           ./configure pfwrf
           ./compile em_real [or wrf]
 
-
+NOTE: Successfully completing the build process for PF.WRF is more likely if
+you build NetCDF, Hypre, Silo, ParFlow and WRF with the same compilers.  The
+system is known to compile on Fedora 12, CentOS 5.4 and Ubuntu 10.04 systems
+using Intel and GCC compilers.  Preliminary tests have shown GCC builds to
+yield better results.
