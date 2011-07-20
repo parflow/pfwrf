@@ -31,6 +31,7 @@ while [ $# -ge 1 ]; do
       titan) WRF_TITAN=1 ; break ;;
       mars) WRF_MARS=1 ; break ;;
       venus) WRF_VENUS=1 ; break ;;
+      pfwrf) WRF_PFWRF=1  ;;
     esac
     shift
 done
@@ -426,6 +427,35 @@ if [ -n "$WRF_CHEM" ] ; then
   fi
 else
   compileflags="${compileflags} "
+fi
+
+# Configure with ParFlow support
+if [ -n "$WRF_PFWRF" ]; then
+  if [ $WRF_PFWRF = 1 ]; then
+    if [ -z "$PARFLOW_DIR" ]; then
+	echo "You need to set a PARFLOW_DIR environmental variable to use ParFlow."
+	exit 1
+    fi
+    export WRF_PFWRF
+#    chk_hypr=$(grep hypre $PARFLOW_DIR/bin/parflow)
+#    chk_silo=$(grep SILO $PARFLOW_DIR/bin/parflow.so)
+    chk_hypr=$(grep 'PARFLOW_HAVE_HYPRE     = yes' $PARFLOW_DIR/config/Makefile.config)
+    chk_silo=$(grep 'PARFLOW_HAVE_SILO      = yes' $PARFLOW_DIR/config/Makefile.config)
+    if [ -n "$chk_hypr" ]; then
+	USE_HYPRE=1
+	export USE_HYPRE
+	if [ -z "$HYPRE_DIR" ]; then
+	  echo "You need to set a HYPRE_DIR environmental variable to use ParFlow"
+	fi
+    fi
+    if [ -n "$chk_silo" ]; then
+	USE_SILO=1
+	export USE_SILO
+	if [ -z "$SILO_DIR" ]; then
+	  echo "You need to set a SILO_DIR environmental variable to use ParFlow"
+	fi
+    fi
+  fi
 fi
 
 if [ `which timex` ] ; then

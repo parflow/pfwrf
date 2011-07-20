@@ -21,7 +21,7 @@ COREDEFS = CONFIGURE_EM_CORE \
            CONFIGURE_NMM_CORE -DNMM_MAX_DIM=2600 \
 	   CONFIGURE_COAMPS_CORE \
 	   CONFIGURE_DA_CORE \
-           CONFIGURE_EXP_CORE
+           CONFIGURE_EXP_CORE PFWRFCORE
 
 #### Single location for defining total number of domains.  You need
 #### at least 1 + 2*(number of total nests).  For example, 1 coarse
@@ -80,6 +80,9 @@ ESMF_MOD_INC        = ESMFMODINC $(ESMF_IO_INC)
 ESMF_IO_DEFS        = ESMFIODEFS
 # select build target for external/io_esmf vs. external/esmf_time_f90
 ESMF_TARGET         = ESMFTARGET
+
+PFWRFMSG
+PFWRFLIBS
 
 ##############################################################################
 

@@ -88,6 +88,8 @@ CONTAINS
      &          ,noahres                                              &
              !  Optional adaptive time step
      &          ,bldt,curr_secs,adapt_step_flag                       &
+         ! Added for parflow
+     &          ,grid, config_flags                                   &
          ! Optional urban with BEP
      &          ,sf_urban_physics,gmt,xlat,xlong,julday               &
      &          ,num_urban_layers                                     & !multi-layer urban
@@ -106,7 +108,13 @@ CONTAINS
      &          ,dl_u_bep                                             &                          
          ! Optional urban Bep end
      &                                                             )
-              
+
+! added for parflow
+    USE module_domain, ONLY : domain
+    USE module_configure, ONLY : grid_config_rec_type
+! added for parflow
+     
+     
 #if ( ! NMM_CORE == 1 )
    USE module_state_description, ONLY : SFCLAYSCHEME              &
                                        ,MYJSFCSCHEME              &
@@ -164,6 +172,7 @@ CONTAINS
    USE module_sf_sfcdiags_ruclsm
    USE module_sf_sstskin
    USE module_sf_tmnupdate
+   USE module_parflow
 !
 !  This driver calls subroutines for the surface parameterizations.
 !
@@ -469,6 +478,11 @@ CONTAINS
    REAL,       INTENT(IN   ),OPTIONAL    ::     bldt
    REAL,       INTENT(IN   ),OPTIONAL    ::     curr_secs
    LOGICAL,    INTENT(IN   ),OPTIONAL    ::     adapt_step_flag
+   
+! added for parflow
+    TYPE ( domain ), INTENT(INOUT) :: grid
+    TYPE ( grid_config_rec_type ), INTENT(IN) :: config_flags
+! added for parflow   
 
 !  arguments for NCAR surface physics
 
@@ -1544,7 +1558,8 @@ CONTAINS
                 a_u_bep,a_v_bep,a_t_bep,a_q_bep,                & !O multi-layer urban 
                 a_e_bep,b_u_bep,b_v_bep,                        & !O multi-layer urban
                 b_t_bep,b_q_bep,b_e_bep,dlg_bep,                & !O multi-layer urban
-                dl_u_bep,sf_bep,vl_bep                          & !O multi-layer urban
+                dl_u_bep,sf_bep,vl_bep,                         & !O multi-layer urban
+                grid, config_flags                              & !For parflow
                 )
          
          IF ( FRACTIONAL_SEAICE == 1 ) THEN
@@ -1603,6 +1618,26 @@ CONTAINS
                IF(PRESENT(ACGRDFLX))ACGRDFLX(I,J)=ACGRDFLX(I,J) + GRDFLX(I,J)*DT
            ENDDO
            ENDDO
+           
+           ! Run parflow
+#if ( WRF_PFWRF == 1 )
+           WRITE(*,*) 'contemplating parflow_advance t = ' , curr_secs, ' seconds ' , grid%itimestep
+#endif
+           IF ( config_flags%parflow ) THEN
+              ! Only run PF on subcycling intervals
+              IF ( (grid%parflow_subcycle .EQ. 1) .OR.                                                &
+                   (MOD(grid%itimestep,grid%parflow_subcycle) .EQ. 1) ) THEN
+                 WRITE(*,*) 'running  parflow_advance t = ' , curr_secs, ' seconds ' , grid%itimestep
+#if (WRF_PFWRF==1)
+                 CALL parflow_run( DTBL*grid%parflow_subcycle,  &
+                      curr_secs, ims,ime,jms,jme,i_start(1),i_end(1),          &
+                      j_start(1),j_end(1), num_soil_layers,                    &
+                      grid%PF_FLUX, grid%PF_PRESSURE, grid%PF_POROSITY, grid%PF_SATURATION) 
+#else
+                 call wrf_error_fatal ( 'WRF is not compiled to run with ParFlow.' )
+#endif
+              ENDIF
+           ENDIF
 
           CALL SFCDIAGS(HFX,QFX,TSK,QSFC,CHS2,CQS2,T2,TH2,Q2,      &
                      PSFC,CP,R_d,RCP,                              &

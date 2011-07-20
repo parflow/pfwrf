@@ -1580,6 +1580,18 @@ rconfig   integer bucketr_opt             derived               1              0
 
 rconfig   integer grav_settling           namelist,physics      max_domains  0         h    "grav_settling"     "activate gravitationalsettling of fog  0=no, 1=yes"
 
+#include registry.incPF
+
+rconfig   logical parflow             	  namelist,physics      1              .false.           -    "parflow"           "switch to use parflow"   ""
+rconfig   character parflowinput          namelist,physics	1              "wrf_parflow"     -    "parflowinput"      "parflow input file"      ""
+rconfig	  real    pfdzs1                  namelist,physics	1		0.1	-	"pfdzs1" "first soil depth entry" "m"	 
+rconfig	  real    pfdzs2                  namelist,physics	1		0.3	-	"pfdzs2" "second soil depth entry" "m"	 
+rconfig	  real    pfdzs3                  namelist,physics	1		0.6	-	"pfdzs3" "third soil depth entry" "m"	 
+rconfig	  real    pfdzs4                  namelist,physics	1		1.0	-	"pfdzs4" "fourth soil depth entry" "m"	 
+rconfig   integer parflow_subcycle        namelist,physics      1              1        -       "parflow_subcycle" "Number of timesteps to subcycle parflow"   ""
+rconfig   logical parflow_test_balance 	  namelist,physics      1              .false.  -       "parflow_test_balance" "switch to use run parflow water balance test case"   ""
+rconfig	  real    parflow_test_balance_moist_tend  namelist,physics	1	1.0	-	"parflow_test_balance_moist_tend" "value used to force moisture tendency for water balance test" ""	 
+
 #FDDA namelist parameters
 rconfig   real    FGDT                    namelist,fdda         max_domains    0       h        "FGDT"          ""      ""
 rconfig   integer  FGDTZERO               namelist,fdda         max_domains    0       rh       "FGDTZERO"             ""      ""

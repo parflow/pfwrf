@@ -9,8 +9,8 @@ OMPCC           =       # -fopenmp
 SFC             =       gfortran
 SCC             =       gcc
 CCOMP           =       gcc
-DM_FC           =       mpif90 -f90=$(SFC)
-DM_CC           =       mpicc -cc=$(SCC)
+DM_FC           =       mpif90
+DM_CC           =       mpicc
 FC              =       CONFIGURE_FC
 CC              =       CONFIGURE_CC
 LD              =       $(FC)
@@ -316,8 +316,8 @@ OMPCC           =       # -openmp -fpp -auto
 SFC             =       ifort
 SCC             =       icc
 CCOMP           =       icc
-DM_FC           =       mpif90 -f90=$(SFC)
-DM_CC           =       mpicc -cc=$(SCC)
+DM_FC           =       mpif90
+DM_CC           =       mpicc
 FC              =       CONFIGURE_FC
 CC              =       CONFIGURE_CC
 LD              =       $(FC)
@@ -480,8 +480,8 @@ OMPCC           =       # -fopenmp
 SFC             =       gfortran
 SCC             =       gcc
 CCOMP           =       gcc
-DM_FC           =       mpif90 -f90=$(SFC)
-DM_CC           =       mpicc -cc=$(SCC)
+DM_FC           =       mpif90
+DM_CC           =       mpicc
 FC              =       CONFIGURE_FC
 CC              =       CONFIGURE_CC
 LD              =       $(FC)

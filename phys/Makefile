@@ -76,6 +76,7 @@ MODULES = \
 	module_sf_slab.o  \
 	module_sf_noahdrv.o  \
 	module_sf_noahlsm.o  \
+	module_parflow.o \
         module_sf_urban.o  \
         module_sf_bep.o  \
         module_sf_bep_bem.o \
@@ -325,6 +326,8 @@ module_sf_noahdrv.o: module_sf_noahlsm.o module_data_gocart_dust.o \
 
 module_sf_noahlsm.o: ../share/module_model_constants.o
 
+module_parflow.o:
+
 module_sf_bep.o: ../share/module_model_constants.o module_sf_urban.o
 
 module_sf_bep_bem.o: ../share/module_model_constants.o module_sf_bem.o 
@@ -517,7 +520,8 @@ module_surface_driver.o: \
 		module_sf_idealscmsfclay.o	\
 		../frame/module_state_description.o \
 		../frame/module_configure.o \
-		../share/module_model_constants.o  
+		../share/module_model_constants.o \
+		module_parflow.o
 
 module_diagnostics.o: ../frame/module_dm.o
 
