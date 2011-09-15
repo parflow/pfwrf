@@ -363,17 +363,15 @@ BENCH_END(rad_driver_tim)
 !********* Surface driver
 ! surface
  ! initialize parflow, if installed and active
+#if ( WRF_PFWRF==1 )
       IF ( config_flags%parflow ) THEN
          IF ( ( grid%itimestep .EQ. 1 ) .OR. ( config_flags%restart ) ) THEN 
-#if (WRF_PFWRF==1)
             CALL parflow_init( ims, ime, jms, jme, grid%num_soil_layers, &
      &           grid%PF_FLUX, grid%PF_PRESSURE, grid%PF_POROSITY, grid%PF_SATURATION, &
      &           config_flags%parflowinput) 
-#else
-            call wrf_error_fatal ( 'WRF is not compiled to run with ParFlow.' )
-#endif
          ENDIF
       ENDIF
+#endif
 
 BENCH_START(surf_driver_tim)
 

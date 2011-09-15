@@ -1890,6 +1890,9 @@ rconfig   integer bucketr_opt             derived               1              0
 
 rconfig   integer grav_settling           namelist,physics      max_domains  0         h    "grav_settling"     "activate gravitationalsettling of fog  0=no, 1=yes"
 
+#parflow namelist entries
+rconfig   logical parflow                 namelist,physics      1              .false.           -    "parflow"           "switch to use parflow"   ""
+
 #FDDA namelist parameters
 rconfig   real    FGDT                    namelist,fdda         max_domains    0       h        "FGDT"          ""      ""
 rconfig   integer  FGDTZERO               namelist,fdda         max_domains    0       rh       "FGDTZERO"             ""      ""

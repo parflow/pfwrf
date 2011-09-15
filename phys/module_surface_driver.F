@@ -1620,23 +1620,23 @@ CONTAINS
            ENDDO
            
            ! Run parflow
-#if ( WRF_PFWRF == 1 )
+#if ( WRF_PFWRF==1 )
            WRITE(*,*) 'contemplating parflow_advance t = ' , curr_secs, ' seconds ' , grid%itimestep
 #endif
            IF ( config_flags%parflow ) THEN
               ! Only run PF on subcycling intervals
+#if ( WRF_PFWRF==1 )
               IF ( (grid%parflow_subcycle .EQ. 1) .OR.                                                &
                    (MOD(grid%itimestep,grid%parflow_subcycle) .EQ. 1) ) THEN
                  WRITE(*,*) 'running  parflow_advance t = ' , curr_secs, ' seconds ' , grid%itimestep
-#if (WRF_PFWRF==1)
                  CALL parflow_run( DTBL*grid%parflow_subcycle,  &
                       curr_secs, ims,ime,jms,jme,i_start(1),i_end(1),          &
                       j_start(1),j_end(1), num_soil_layers,                    &
                       grid%PF_FLUX, grid%PF_PRESSURE, grid%PF_POROSITY, grid%PF_SATURATION) 
+              ENDIF
 #else
                  call wrf_error_fatal ( 'WRF is not compiled to run with ParFlow.' )
 #endif
-              ENDIF
            ENDIF
 
           CALL SFCDIAGS(HFX,QFX,TSK,QSFC,CHS2,CQS2,T2,TH2,Q2,      &
