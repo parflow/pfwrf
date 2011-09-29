@@ -600,7 +600,9 @@ print *,'WATER CHANGE = ',change_water
                                 ims , ime , jms , jme , kms , kme , &
                                 its , ite , jts , jte , kts , kte , &
                                 sf_surface_physics , num_soil_layers , &
+#if ( WRF_PFWRF==1 )
                                 parflow, pfdzs1, pfdzs2, pfdzs3, pfdzs4, &
+#endif
                                 real_data_init_type , &
                                 num_st_levels_input , num_sm_levels_input , num_sw_levels_input , &
                                 num_st_levels_alloc , num_sm_levels_alloc , num_sw_levels_alloc )
@@ -618,10 +620,11 @@ print *,'WATER CHANGE = ',change_water
       INTEGER , INTENT(IN) :: flag_soil_layers, flag_soil_levels, flag_soilhgt
 
       REAL , DIMENSION(ims:ime,jms:jme) , INTENT(IN) :: landmask , sst
-      
+#if ( WRF_PFWRF )
       REAL , INTENT(IN) :: pfdzs1, pfdzs2, pfdzs3, pfdzs4
       
       LOGICAL , INTENT(IN) :: parflow
+#endif
 
       INTEGER , DIMENSION(1:num_st_levels_input) , INTENT(INOUT) :: st_levels_input
       INTEGER , DIMENSION(1:num_sm_levels_input) , INTENT(INOUT) :: sm_levels_input
@@ -790,6 +793,7 @@ print *,'WATER CHANGE = ',change_water
                                  its , ite , jts , jte , kts , kte )
 
       ELSE IF ( ( sf_surface_physics .EQ. LSMSCHEME ) .AND. ( num_soil_layers .GT. 1 ) ) THEN
+#if ( WRF_PFWRF==1 )
       	 IF ( parflow ) THEN  !JLW via JDM
       	   CALL init_soil_depth_2_pf ( zs , dzs , num_soil_layers,    &
                                          pfdzs1, pfdzs2, pfdzs3, pfdzs4 )
@@ -797,6 +801,7 @@ print *,'WATER CHANGE = ',change_water
            CALL init_soil_depth_2 ( zs , dzs , num_soil_layers )
          
          ENDIF  !JLW via JDM
+#endif
          
          CALL init_soil_2_real ( tsk , tmn , smois , sh2o , tslb , &
                                  st_input , sm_input , sw_input , landmask , sst , &

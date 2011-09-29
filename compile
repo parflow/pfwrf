@@ -419,6 +419,11 @@ else
       exit 2
     endif
   endif
+# Added for parflow
+  if ($WRF_PFWRF == 1) then
+    echo 'include registry.parflow' >> Registry/Registry
+  endif
+# /pf
 
   echo " "
   echo -n "Compiling: "

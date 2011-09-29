@@ -3768,6 +3768,7 @@ SUBROUTINE vertical_diffusion_2   ( ru_tendf, rv_tendf, rw_tendf, rt_tendf,   &
 !
 ! @SGS 6-8-09
 ! @RMM 6-4-09
+#if ( WRF_PFWRF == 1 )
    IF ( config_flags%parflow_test_balance ) THEN
       IF (n_moist .ge. PARAM_FIRST_SCALAR) THEN
 
@@ -3788,6 +3789,7 @@ SUBROUTINE vertical_diffusion_2   ( ru_tendf, rv_tendf, rw_tendf, rt_tendf,   &
          
       ENDIF
    ENDIF
+#endif
 !*****************************************
 !*****************************************   
 

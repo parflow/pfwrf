@@ -1446,9 +1446,11 @@ integer::oops1,oops2
                                   its , ite , jts , jte , kts , kte , &
                                   model_config_rec%sf_surface_physics(grid%id) , &
                                   model_config_rec%num_soil_layers , &
+#if ( WRF_PFWRF==1 )
                                   config_flags%parflow, &
                                   config_flags%pfdzs1, config_flags%pfdzs2, &
                                   config_flags%pfdzs3, config_flags%pfdzs4, &
+#endif
                                   model_config_rec%real_data_init_type , &
                                   num_st_levels_input , num_sm_levels_input , num_sw_levels_input , &
                                   num_st_levels_alloc , num_sm_levels_alloc , num_sw_levels_alloc )
